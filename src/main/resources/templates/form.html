@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>ToDoList</title>
+</head>
+
+<body>
+
+<!-- Add an Employee -->
+<a href="/toDo/showFormForAdd">
+    Add Employee
+</a>
+
+<br>
+
+<a href="/toDo/users/export/excel">
+    Export
+</a>
+
+<br>
+
+
+<h3>ToDoList</h3>
+<hr>
+
+<table>
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>deadline</th>
+        <th>status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="tempToDoList : ${todolist}">
+
+        <td th:text="${tempToDoList.name}" />
+        <td th:text="${tempToDoList.deadline}" />
+        <td th:text="${tempToDoList.status}" />
+
+        <td>
+            <a th:href="@{/toDo/showFormForUpdate(id=${tempToDoList.id})}"
+               class="btn btn-danger btn-sm"
+            >
+                Update
+            </a>
+
+            <a th:href="@{/toDo/delete(id=${tempToDoList.id})}"
+               class="btn btn-danger btn-sm"
+               >
+                Delete
+            </a>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+
+</body>
+</html>
+
+
+

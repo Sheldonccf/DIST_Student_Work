@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Save Task</title>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h3>ToDoList</h3>
+  <hr>
+
+  <p class="h4 mb-4">Save Task</p>
+
+  <form action="#" th:action="@{/toDo/add}"
+        th:object="${todolist}" method="POST">
+
+    <input type="text" th:field="*{name}"
+           class="form-control mb-4 col-4" placeholder="name">
+
+    <input type="text" th:field="*{deadline}"
+           class="form-control mb-4 col-4" placeholder="deadline">
+
+    <input type="text" th:field="*{status}"
+           class="form-control mb-4 col-4" placeholder="status">
+
+    <button type="submit" class="btn btn-info col-2">Save</button>
+
+  </form>
+
+  <hr>
+  <a th:href="@{/toDo/form}">Back to toDoList</a>
+
+</div>
+</body>
+
+</html>
