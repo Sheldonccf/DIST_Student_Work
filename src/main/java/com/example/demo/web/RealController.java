@@ -5,6 +5,9 @@ import com.example.demo.ExcelExport.ExcelExport;
 import com.example.demo.model.Todo;
 import com.example.demo.service.JobLaunchService;
 import com.example.demo.service.Service;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/toDo")
+@Api(tags = "任务表管理接口")
 public class RealController {
 
     private Service service;
@@ -32,6 +36,7 @@ public class RealController {
     }
 
     @GetMapping(value = "/form")
+    @ApiOperation("显示所有任务表")
     public String getAllList(Model theModel) {
 
         //add to the spring model bound to the html
@@ -41,6 +46,7 @@ public class RealController {
     }
 
     @GetMapping(value ="/showFormForAdd")
+    @ApiOperation("显示添加任务表页面")
     public String showFormForAdd(Model theModel) {
 
         Todo todolist = new Todo();
@@ -51,6 +57,7 @@ public class RealController {
     }
 
     @PostMapping ("/add")
+    @ApiOperation("添加任务")
     public String addTask(@ModelAttribute("todolist") Todo todolist) {
 
         service.save(todolist);
@@ -59,6 +66,7 @@ public class RealController {
     }
 
     @GetMapping("/delete")
+    @ApiOperation("删除任务")
     public String delete(@RequestParam("id") int theId) {
 
         service.deleteById(theId);
@@ -67,6 +75,7 @@ public class RealController {
     }
 
     @GetMapping(value ="/showFormForUpdate")
+    @ApiOperation("显示修改任务表页面")
     public String showFormForUpdate(@RequestParam("id") int theId,
                                     Model theModel) {
 
@@ -78,6 +87,7 @@ public class RealController {
     }
 
     @PostMapping(value ="/update")
+    @ApiOperation("修改任务")
     public String updateTask(@ModelAttribute("todolist") Todo todolist) {
 
         service.save(todolist);
@@ -85,6 +95,7 @@ public class RealController {
         return "redirect:/toDo/form";
     }
     @GetMapping("/users/export/excel")
+    @ApiOperation("导出到excel")
     public String exportToDoList() {
 
         //read directly from the service layer
@@ -96,6 +107,7 @@ public class RealController {
     }
 
     @GetMapping("/jdbc")
+    @ApiOperation("读取csv并存入mysql数据库")
     public String launchJobUseFlatFileWithJdbcBatchItemWriter() {
 
         jobLaunchService.launchJob(task.thisJob());
