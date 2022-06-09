@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class DBReader  {
+public class DBReader{
 
 
     public FlatFileItemReader<Todo> read() {

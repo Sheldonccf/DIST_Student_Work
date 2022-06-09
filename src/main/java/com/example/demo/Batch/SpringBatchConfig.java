@@ -18,6 +18,7 @@ import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -37,6 +38,7 @@ public class SpringBatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
+    @Qualifier("DBWriter")
     private ItemWriter<Todo> itemWriter;
 
     @Autowired
@@ -57,36 +59,5 @@ public class SpringBatchConfig {
                 .start(step)
                 .build();
     }
-    
-   /* @Bean
-    public FlatFileItemReader<Todo> itemReader() {
-
-        FlatFileItemReader<Todo> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new FileSystemResource("C:\\work\\demo\\ToDoList_Read.csv"));
-        flatFileItemReader.setName("CSV-Reader");
-        flatFileItemReader.setLineMapper(lineMapper());
-        return flatFileItemReader;
-    }
-
-
-    @Bean
-    public LineMapper<Todo> lineMapper() {
-
-        DefaultLineMapper<Todo> defaultLineMapper = new DefaultLineMapper<>();
-        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
-
-        lineTokenizer.setDelimiter(",");
-        lineTokenizer.setStrict(false);
-        lineTokenizer.setNames("name", "deadline", "status");
-
-        BeanWrapperFieldSetMapper<Todo> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        fieldSetMapper.setTargetType(Todo.class);
-
-        defaultLineMapper.setLineTokenizer(lineTokenizer);
-        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
-
-        return defaultLineMapper;
-    }*/
-
 
 }
