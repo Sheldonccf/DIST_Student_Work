@@ -8,13 +8,13 @@
 <body>
 
 <!-- Add an Employee -->
-<a href="/toDo/showFormForAdd">
+<a href="/list-manager/v-1.0/submissions">
     Add Employee
 </a>
 
 <br>
 
-<a href="/toDo/users/export/excel">
+<a href="/list-manager/v-1.0/exports">
     Export
 </a>
 
@@ -41,13 +41,13 @@
         <td th:text="${tempToDoList.status}" />
 
         <td>
-            <a th:href="@{/toDo/showFormForUpdate(id=${tempToDoList.id})}"
+            <a th:href="@{/tasks/(id=${tempToDoList.id})}"
                class="btn btn-danger btn-sm"
             >
                 Update
             </a>
 
-            <a th:href="@{/toDo/delete(id=${tempToDoList.id})}"
+            <a th:href="@{/tasks/(id=${tempToDoList.id})}"
                class="btn btn-danger btn-sm"
                >
                 Delete

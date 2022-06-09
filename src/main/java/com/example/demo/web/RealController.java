@@ -1,121 +1,106 @@
 package com.example.demo.web;
 
-import com.example.demo.Batch.toDoItemProcessor;
+//import com.example.demo.Batch.toDoItemProcessor;
 import com.example.demo.ExcelExport.ExcelExport;
 import com.example.demo.model.Todo;
+//import com.example.demo.service.JobLaunchService;
 import com.example.demo.service.JobLaunchService;
 import com.example.demo.service.Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.batch.core.Job;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Controller
-@RequestMapping("/toDo")
+@RestController
+@RequestMapping("/api/v-1.0")
 @Api(tags = "任务表管理接口")
 public class RealController {
-
+    @Autowired
     private Service service;
+    @Autowired
+    private JobLaunchService jobLauncher;
 
-    private JobLaunchService jobLaunchService;
 
-    private toDoItemProcessor task;
 
     /** constructor注射service层 **/
-    @Autowired
-    public RealController(Service service, JobLaunchService jobLaunchService, toDoItemProcessor task) {
-        this.service = service;
-        this.jobLaunchService = jobLaunchService;
-        this.task = task;
+    //@Autowired
+    //public RealController(Service service, JobLauncher jobLauncher, Job task) {
+    //    this.service = service;
+    //    this.jobLauncher = jobLauncher;
+    //    this.task = task;
+    //}
+
+    @GetMapping(value = "/tasks")
+    @ApiOperation("查找所有任务")
+    public List<Todo> getAllList() {
+        return service.getAllList();
     }
 
-    @GetMapping(value = "/form")
-    @ApiOperation("显示所有任务表")
-    public String getAllList(Model theModel) {
-
-        //add to the spring model bound to the html
-        theModel.addAttribute("todolist", service.getAllList());
-
-        return "form";
-    }
-
-    @GetMapping(value ="/showFormForAdd")
-    @ApiOperation("显示添加任务表页面")
-    public String showFormForAdd(Model theModel) {
-
-        Todo todolist = new Todo();
-
-        theModel.addAttribute("todolist", todolist);
-
-        return "add";
-    }
-
-    @PostMapping ("/add")
+    @PostMapping ("/tasks")
     @ApiOperation("添加任务")
-    public String addTask(@ModelAttribute("todolist") Todo todolist) {
-
-        service.save(todolist);
-
-        return "redirect:/toDo/form";
+    public void addTask(Todo todolist) {
+        if (!service.existById(todolist.getId())) {
+            service.save(todolist);
+        }
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping ("/tasks/{id}")
     @ApiOperation("删除任务")
-    public String delete(@RequestParam("id") int theId) {
-
-        service.deleteById(theId);
-
-        return "redirect:/toDo/form";
+    public void deleteTask(@RequestParam("id") int theId) {
+        if (service.existById(theId)) {
+            service.deleteById(theId);
+        }
     }
 
-    @GetMapping(value ="/showFormForUpdate")
-    @ApiOperation("显示修改任务表页面")
-    public String showFormForUpdate(@RequestParam("id") int theId,
-                                    Model theModel) {
-
-        Todo todolist = service.findById(theId);
-
-        theModel.addAttribute("todolist", todolist);
-
-        return "update";
+    @GetMapping(value ="/tasks/{id}")
+    @ApiOperation("查找任务")
+    public Todo findTask(@RequestParam("id") int theId) {
+        return service.findById(theId);
     }
 
-    @PostMapping(value ="/update")
+    @PutMapping(value ="/tasks/{id}")
     @ApiOperation("修改任务")
-    public String updateTask(@ModelAttribute("todolist") Todo todolist) {
+    public Todo updateTask(@RequestParam("id") int theId, Todo original) {
+        Todo item =service.findById(theId);
 
-        service.save(todolist);
-
-        return "redirect:/toDo/form";
+        if (service.existById(theId)) {
+            item.setName(original.getName());
+            item.setDeadline(original.getDeadline());
+            item.setStatus(original.isStatus());
+            service.save(item);
+        }
+        return service.findById(theId);
     }
-    @GetMapping("/users/export/excel")
-    @ApiOperation("导出到excel")
-    public String exportToDoList() {
 
-        //read directly from the service layer
+    @GetMapping("/downloads")
+    @ApiOperation("从mysql导出")
+    public void exportToExcel() {
         List<Todo> all = service.getAllList();
         ExcelExport excelFileExporter = new ExcelExport(all, "ToDoList.xlsx" );
         excelFileExporter.writeToExcel();
-
-        return "redirect:/toDo/form";
     }
 
-    @GetMapping("/jdbc")
+    @GetMapping("/uploads")
     @ApiOperation("读取csv并存入mysql数据库")
-    public String launchJobUseFlatFileWithJdbcBatchItemWriter() {
+    public BatchStatus upload() throws JobParametersInvalidException,
+            JobExecutionAlreadyRunningException, JobInstanceAlreadyCompleteException,
+            JobRestartException {
 
-        jobLaunchService.launchJob(task.thisJob());
-        return "redirect:/toDo/form";
+        return jobLauncher.load();
     }
-
-
-
-
-
 }

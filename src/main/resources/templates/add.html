@@ -18,7 +18,7 @@
 
   <p class="h4 mb-4">Save Task</p>
 
-  <form action="#" th:action="@{/toDo/add}"
+  <form action="#" th:action="@{/tasks}"
         th:object="${todolist}" method="POST">
 
     <input type="text" th:field="*{name}"
@@ -35,7 +35,7 @@
   </form>
 
   <hr>
-  <a th:href="@{/toDo/form}">Back to toDoList</a>
+  <a th:href="@{/list-manager/v-1.0/lists}">Back to toDoList</a>
 
 </div>
 </body>

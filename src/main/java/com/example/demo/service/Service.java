@@ -13,4 +13,6 @@ public interface Service {
     public void save(Todo todolist);
 
     public void deleteById(int id);
+
+    public boolean existById(int id);
 }

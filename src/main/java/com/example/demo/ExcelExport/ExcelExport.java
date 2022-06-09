@@ -3,8 +3,6 @@ package com.example.demo.ExcelExport;
 import com.example.demo.model.Todo;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,7 +54,5 @@ public class ExcelExport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }

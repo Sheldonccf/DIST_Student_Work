@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.DAO.ListDAO;
 import com.example.demo.model.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,5 +49,9 @@ public class ServiceImple implements Service{
         listDAO.deleteById(id);
     }
 
-
+    @Override
+    @Transactional
+    public boolean existById(int id) {
+        return listDAO.existsById(id);
+    }
 }
